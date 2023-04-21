@@ -6,7 +6,8 @@ using Reexport: @reexport
 # We need to load the preference setting from here and not from `LibP4est.jl`
 # since `@load_preference` looks into the module it is running from. Thus, we
 # load all preferences here and access them from the `module LibP4est`.
-using Preferences: @load_preference
+using Preferences: @load_preference, set_preferences!
+using UUIDs: UUID
 const _PREFERENCE_LIBP4EST = @load_preference("libp4est", "P4est_jll")
 const _PREFERENCE_LIBSC = @load_preference("libsc", _PREFERENCE_LIBP4EST)
 
@@ -24,7 +25,7 @@ include("pointerwrappers.jl")
 """
     P4est.uses_mpi()
 
-Is intended to return `true`` if the `p4est` library was compiled with MPI
+Is intended to return `true` if the `p4est` library was compiled with MPI
 enabled. Since P4est.jl currently only supports `p4est` with MPI enabled,
 this may always return `true`.
 """
@@ -68,6 +69,28 @@ function init(log_handler, log_threshold)
     return nothing
 end
 
+"""
+    P4est.set_p4est_preference!(path)
+
+Set the `path` to system-provided `p4est` installation. Restart the julia session
+after executing this function so that the changes take effect. Calling this
+function is necesarry, when you want to use a system-provided `p4est`
+installation.
+"""
+set_p4est_preference!(path) = set_preferences!(UUID("7d669430-f675-4ae7-b43e-fab78ec5a902"), # UUID of P4est.jl
+                                               "libp4est" => path, force = true)
+
+"""
+    P4est.set_sc_preference!(path)
+
+Set the `path` to system-provided `sc` installation. Restart the julia session
+after executing this function so that the changes take effect. Calling this
+function is necesarry, when you want to use a system-provided `p4est`
+installation on Windows or when you want to use a another `sc`
+installation than the one that `libp4est.so` already links to.
+"""
+set_sc_preference!(path) = set_preferences!(UUID("7d669430-f675-4ae7-b43e-fab78ec5a902"), # UUID of P4est.jl
+                                               "libsc" => path, force = true)
 
 function __init__()
     version = P4est.version()

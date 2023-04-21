@@ -93,20 +93,16 @@ setting containing the path to your local build of the shared library of
 [`p4est`](https://github.com/cburstedde/p4est).
 
 ```julia
-julia> using Preferences, UUIDs
+julia> using P4est
 
-julia> set_preferences!(
-           UUID("7d669430-f675-4ae7-b43e-fab78ec5a902"), # UUID of P4est.jl
-           "libp4est" => "/path/to/your/libp4est.so", force = true)
+julia> P4est.set_p4est_preference!("/path/to/your/libp4est.so")
 ```
 On Windows you also need to set the path to the local build of the shared library
 of [`libsc`](https://github.com/cburstedde/libsc/tree/master), which is a subpackage
 of `p4est`. On other systems, this is not necessary as the library is already linked
 by `libp4est.so`, but it can be used to employ also a custom build of `libsc`.
 ```julia
-julia> set_preferences!(
-           UUID("7d669430-f675-4ae7-b43e-fab78ec5a902"), # UUID of P4est.jl
-           "libsc" => "/path/to/your/libsc.so", force = true)
+julia> P4est.set_sc_preference!("/path/to/your/libsc.so")
 ```
 
 Note that you should restart your Julia session after changing the preferences.
@@ -121,7 +117,7 @@ installation of the underlying C libraries.
   new one if there is none.
 - Install the required packages.
   ```julia
-  julia> Pkg.add(["MPIPreferences", "MPI", "UUIDs", "Preferences", "P4est"])
+  julia> Pkg.add(["MPIPreferences", "MPI", "P4est"])
   ```
 - Set [MPI.jl](https://github.com/JuliaParallel/MPI.jl) preferences.
   ```julia
@@ -131,15 +127,10 @@ installation of the underlying C libraries.
   ```
 - Set [P4est.jl](https://github.com/trixi-framework/P4est.jl) preferences.
   ```julia
-  julia> using Preferences, UUIDs
+  julia> using P4est
 
-  julia> set_preferences!(
-             UUID("7d669430-f675-4ae7-b43e-fab78ec5a902"), # UUID of P4est.jl
-             "libp4est" => "/path/to/your/libp4est.so", force = true)
-
-  julia> set_preferences!(
-             UUID("7d669430-f675-4ae7-b43e-fab78ec5a902"), # UUID of P4est.jl
-             "libsc" => "/path/to/your/libsc.so", force = true)
+  julia> P4est.set_p4est_preference!("/path/to/your/libp4est.so")
+  julia> P4est.set_sc_preference!("/path/to/your/libsc.so")
   ```
 - Restart the Julia REPL and load the packages.
   ```julia
